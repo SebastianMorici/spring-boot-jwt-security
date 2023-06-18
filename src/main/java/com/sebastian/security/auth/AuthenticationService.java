@@ -21,17 +21,15 @@ public class AuthenticationService {
 
    public AuthenticationResponse register(RegisterRequest request) {
       User user = User.builder()
-           .firstName(request.getFirstname())
-           .lastName(request.getLastname())
-           .email(request.getEmail())
-           .password(passwordEncoder.encode(request.getPassword()))
+           .firstName(request.firstname())
+           .lastName(request.lastname())
+           .email(request.email())
+           .password(passwordEncoder.encode(request.password()))
            .role(Role.USER)
            .build();
       repository.save(user);
       String jwtToken = jwtService.generateToken(user);
-      return AuthenticationResponse.builder()
-           .token(jwtToken)
-           .build();
+      return new AuthenticationResponse(jwtToken);
    }
 
    public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -43,8 +41,6 @@ public class AuthenticationService {
            .orElseThrow();
 
       String jwtToken = jwtService.generateToken(user);
-      return AuthenticationResponse.builder()
-           .token(jwtToken)
-           .build();
+      return new AuthenticationResponse(jwtToken);
    }
 }
